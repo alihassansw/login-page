@@ -1,0 +1,66 @@
+<template>
+  <template if:true={isLoggedIn}>
+    <lightning-card title="Accounts" >
+      <span  slot="actions" class="slds-badge slds-theme_success slds-m-horizontal_small">logged in</span>
+      <lightning-button onclick={logOut} label="log out" slot="actions"></lightning-button>
+      <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+        <thead>
+          <tr class="slds-line-height_reset">
+            <th class="" scope="col">
+              <div class="slds-truncate" title="Opportunity Name">Details</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <template for:each={accounts} for:item="account">
+            <tr key={account.Id} onclick={showDetails} data-id={account.Id} class="slds-hint-parent">
+              <td data-label="Opportunity Name">
+                <div class="slds-truncate" title={account.Name}>
+                  <p style="cursor: pointer;">{account.Name}</p>
+                </div>
+              </td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+    </lightning-card>
+  </template>
+
+  <template if:false={isLoggedIn}>
+    <div class="slds-m-around_medium">
+      <p>You are not logged in. Redirecting in {countdown} seconds...</p>
+    </div>
+  </template>
+
+  <template if:true={showModal}>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+    <section
+      role="dialog"
+      tabindex="-1"
+      aria-labelledby="modal-heading-01"
+      aria-modal="true"
+      aria-describedby="modal-content-id-1"
+      class="slds-modal slds-fade-in-open slds-modal_large"
+    >
+      <div class="slds-modal__container">
+        <header class="slds-modal__header">
+          <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{selectedAccount.Name} Details</h2>
+          <button class="slds-button slds-button_icon slds-modal__close" title="Close" onclick={closeModal}>
+            <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+            <span class="slds-assistive-text">Close</span>
+          </button>
+        </header>
+        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+          <template if:true={selectedAccount}>
+            <p><strong>Name:</strong> {selectedAccount.Name}</p>
+            <p><strong>Status:</strong> {selectedAccount.AcctSeed__Status__c}</p>
+            <p><strong>Next Billing Date:</strong> {selectedAccount.AcctSeed__Next_Billing_Date__c}</p>
+            <p><strong>Last Billing Date:</strong> {selectedAccount.AcctSeed__Last_Billing_Date__c}</p>
+            <p><strong>Billing Frequency:</strong> {selectedAccount.AcctSeed__Billing_Frequency__c}</p>
+            <p><strong>Customer:</strong> {selectedAccount.AcctSeed__Customer__r.Name}</p>
+          </template>
+        </div>
+      </div>
+    </section>
+  </template>
+</template>
